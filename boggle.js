@@ -121,6 +121,7 @@ class Boggle {
     for (let i = 0; i < this.dictionary.length; i++) {
       wordFound = false;
       this.usedLetter = [];
+      this.wrongLetter = [];
       let j = 0;
       let word = dictionary[i];
       let firstLetter = word[0];
@@ -134,6 +135,7 @@ class Boggle {
           if (this.checkWordInSurroundings(word, row, column)) {
             this.answer.push(word);
             wordFound = true;
+
           }
         }
         j++;
