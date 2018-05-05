@@ -50,72 +50,70 @@ class Boggle{
     }
 
     startchecking(row,column,words){
-        var index = 1
+        var SearchedWordIndex = 1
         var checker = this.checkAround(row,column)
-        var array = [[row,column].toString()]
+        var RowColumnList = [[row,column].toString()]
         var backtrackLetterIndex = []
         var backtrackSpot = []
         var possibleOutcome = []
         var i = 0
         while(i<checker.length){
-            if(words.charAt(index)!==''){
-                if(this.wordsBoard[checker[i][0]][checker[i][1]]==words.charAt(index)&&backtrackSpot.indexOf([checker[i][0],checker[i][1]].toString())<0){
-                    possibleOutcome.push([checker[i][0],checker[i][1]])
-                }
-                if(i == checker.length-1){
-                    if(possibleOutcome.length==1){
-                        row = possibleOutcome[0][0]
-                        column = possibleOutcome[0][1]
-                        possibleOutcome=[]
-                        if(array.indexOf([row,column].toString())<0){
-                            index++
-                            array.push([row,column].toString())
-                            checker = this.checkAround(row,column)
-                            i=-1
-                        }
-                    }else if(possibleOutcome.length>1){
-                        backtrackSpot.push(possibleOutcome[0].toString())
-                        backtrackLetterIndex.push(index)
-                        row = possibleOutcome[0][0]
-                        column = possibleOutcome[0][1]
-                        possibleOutcome=[]
-                        if(array.indexOf([row,column].toString())<0){
-                            index++
-                            array.push([row,column].toString())
-                            checker = this.checkAround(row,column)
-                            i=-1
-                        }
-                    }else{
-                        if(backtrackLetterIndex.length>0){
-                            array.splice(backtrackLetterIndex[backtrackLetterIndex.length-1],(array.length-(backtrackLetterIndex[backtrackLetterIndex.length-1]-1)))
-                            index = backtrackLetterIndex[backtrackLetterIndex.length-1]
-                            backtrackLetterIndex.splice(backtrackLetterIndex.length-1,1)
-                            row = array[array.length-1].split(',')[0]
-                            column = array[array.length-1].split(',')[1]
-                            checker = this.checkAround(row,column)
-                            i=-1
-                        }
+            if(this.wordsBoard[checker[i][0]][checker[i][1]]==words.charAt(SearchedWordIndex)&&backtrackSpot.indexOf([checker[i][0],checker[i][1]].toString())<0){
+                possibleOutcome.push([checker[i][0],checker[i][1]])
+            }
+            if(i == checker.length-1){
+                if(possibleOutcome.length==1){
+                    row = possibleOutcome[0][0]
+                    column = possibleOutcome[0][1]
+                    possibleOutcome=[]
+                    if(RowColumnList.indexOf([row,column].toString())<0){
+                        SearchedWordIndex++
+                        RowColumnList.push([row,column].toString())
+                        checker = this.checkAround(row,column)
+                        i=-1
+                    }
+                }else if(possibleOutcome.length>1){
+                    backtrackSpot.push(possibleOutcome[0].toString())
+                    backtrackLetterIndex.push(SearchedWordIndex)
+                    row = possibleOutcome[0][0]
+                    column = possibleOutcome[0][1]
+                    possibleOutcome=[]
+                    if(RowColumnList.indexOf([row,column].toString())<0){
+                        SearchedWordIndex++
+                        RowColumnList.push([row,column].toString())
+                        checker = this.checkAround(row,column)
+                        i=-1
+                    }
+                }else{
+                    if(backtrackLetterIndex.length>0){
+                        RowColumnList.splice(backtrackLetterIndex[backtrackLetterIndex.length-1],(RowColumnList.length-(backtrackLetterIndex[backtrackLetterIndex.length-1]-1)))
+                        SearchedWordIndex = backtrackLetterIndex[backtrackLetterIndex.length-1]
+                        backtrackLetterIndex.splice(backtrackLetterIndex.length-1,1)
+                        row = RowColumnList[RowColumnList.length-1].split(',')[0]
+                        column = RowColumnList[RowColumnList.length-1].split(',')[1]
+                        checker = this.checkAround(row,column)
+                        i=SearchedWordIndex-1
                     }
                 }
             }
             i++
         }
-        this.result = array.length==words.length? words:false
+        this.result = RowColumnList.length==words.length? words:false
         return this.result
     }
 
     checkAround(row,column){
-        var array = []
+        var LettersAroundtheSpot = []
         for(var i=row-1;i<=row+1;i++){
             for(var j=column-1;j<=column+1;j++){
                 if(i!==row||j!==column){ 
                     if(i>=0&&j>=0&&i<this.wordsBoard.length&&j<this.wordsBoard.length){
-                        array.push([i,j])
+                        LettersAroundtheSpot.push([i,j])
                     }
                 }
             }
         }
-        return array
+        return LettersAroundtheSpot
     }
 }
 
