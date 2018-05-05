@@ -14,7 +14,7 @@ class Boggle{
         var blankBoard = [];
         var sizeBoard = 4;
         var alp = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        var dummyAlp = 'DGHIKLPSYEUTEORN'
+        var dummyAlp = 'DGHOKLPSYEUTEORN'
         var indxDum = 0;
         
         for(let a = 0; a < sizeBoard; a++){
@@ -38,31 +38,36 @@ class Boggle{
             for(let b = 0; b < solveBoard[a].length; b++){
                 var lockWord = '';
                 var tempLetter = solveBoard[a][b]
-                var position = [a, b]
                 
-                var theNextLetter = this.radius(...position, solveBoard);
+                var position = [a, b]
                 
                 //loop kamus
                 //console.log(this.kamus().length)
                 for(let c=0; c<this.kamus().length; c++){
                     
                     if(this.kamus()[c][0]===tempLetter){
-                        lockWord = this.kamus()[c];
+                        lockWord = this.kamus()[c]; console.log(lockWord)
                         var counterLockWord = 0;
                         var limCOunterLockWord = lockWord.length-1;
                         var record = [];
-                        
-                        for(let d = 0; d < lockWord.length; d++){
-                            
+                        console.log(position)
+                        for(let d = 1; d < lockWord.length; d++){
+                            var theNextLetter = this.radius(...position, solveBoard);
+                            console.log(lockWord[d])
+                            console.log(theNextLetter)
                             for(let e = 0;  e <  theNextLetter.length ; e++){
-                                
+                                //jika ya update position dan check di radiusnya
+                                //jika tidak sama maka keluar d-1 atau pake while, jadi selama counterLockWord < lim;
                                 if(lockWord[d]===theNextLetter[e][0]){
                                     record.push(theNextLetter[e][1]+theNextLetter[e][2])
+                                    position = [Number(theNextLetter[e][1]), Number(theNextLetter[e][2])]
                                     counterLockWord += 1;
+                                    break;
                                     
                                 }
                             }
-
+                            console.log(counterLockWord)
+                         console.log(limCOunterLockWord)
                             if(counterLockWord === limCOunterLockWord){
                                 this.foundWord.push(lockWord);
                             }
@@ -176,7 +181,7 @@ class Boggle{
     backTrack(){}
     
     kamus(){
-        var keyWord = ['APPLE', 'SIT', 'TRIP','TURN', 'SUPER']
+        var keyWord = ['SIT','TURN','SUPER']
         return  keyWord;
     }
 
