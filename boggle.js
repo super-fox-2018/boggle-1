@@ -1,7 +1,11 @@
 class Boggle {
   constructor() {
-    var kamus = ['TES', 'WOW', 'YAP'];
+    //let kamus = require('./data.js');
+
+    //using my own dictionary
+    let kamus = ['MAKAN', 'HACKTIV', 'ES', 'SEGAR', 'BLACK', 'BLUE', 'NASI', 'lAPAR', 'MINUM', 'HAUS', 'WAKTU', 'BERLALU', 'CEPAT', 'JAVA', 'LARI', 'DUDUK', 'PUASA', 'LAGU', 'MENYANYI', 'HORE', 'WOW', 'BUAH', 'RIP', 'GREEN', 'TOS', 'SOLVE', 'REST', 'TART']
     this.kamus = kamus;
+
   }
 
   isiAcak() {
@@ -10,8 +14,6 @@ class Boggle {
     return abc[ran];
   }
 
-  //board isi acak abc tpi blom dipakai,,
-  //pkai cek manual dulu di bawah (cekIndekLine)
   makeBoard(num) {
     let arr = [];
     for (let i = 0; i < num; i++) {
@@ -24,77 +26,106 @@ class Boggle {
     return arr;
   }
 
-  result(sum, arr) {
-    return sum + ' Words found: ' + '\n' + arr.join('\n');
-  }
 
-
-  //cek right side
-  cekIndekLine() {
-
-    //manual board
-    let board = [
-      ['D', 'G', 'H', 'I'],
-      ['K', 'T', 'E', 'S'],
-      ['Y', 'A', 'P', 'F'],
-      ['W', 'O', 'W', 'P'],
-    ];
-
-    console.log(board); //
+  //Cek arah kanan kebawah && diagonal
+  cekkanan(manyboards) {
+    let board = this.makeBoard(manyboards)
 
     var count = 0;
-    var fill = 0;
-    var result = [];
-    var dictionarytemp = [];
+    var kamus1 = 0;
+    var temp = [];
+    var rightResult = [];
 
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        for (let k = 0; k < this.kamus.length; k++) {
-          if (board[i][j] === this.kamus[k][fill]) {
-            fill++;
+    var kamus = this.kamus;
 
-            dictionarytemp.push(board[i][j]);
+    for (let i = 0; i < kamus.length; i++) {
+      kamus1 = 0;
+      temp = [];
+      for (let j = 0; j < board.length; j++) {
+        for (let k = 0; k < board[j].length; k++) {
+          if (kamus[i][kamus1] === board[j][k]) {
+            kamus1++;
+            temp.push(board[j][k]);
 
-            if (dictionarytemp.join('') === this.kamus[k]) {
-              result.push(this.kamus[k]);
-              dictionarytemp = [];
-              fill = 0;
+            if (temp.join('') === kamus[i]) {
+              rightResult.push(kamus[i]);
+
               count++;
             }
           }
         }
       }
     }
-
-    return this.result(count, result);
+    return rightResult
   }
 
 
 
-  cekBawah() {
+  //cek kekiri && keatas diagonal
+  cekkiri(manyboards) {
+    let board = this.makeBoard(manyboards)
 
+    var count = 0;
+    var kamus1 = 0;
+    var temp = [];
+    var leftResult = [];
 
+    var kamus = this.kamus;
 
+    for (let i = kamus.length - 1; i >= 0; i--) {
+      kamus1 = 0;
+      temp = [];
+      for (let j = board.length - 1; j >= 0; j--) {
+        for (let k = board[j].length - 1; k >= 0; k--) {
+          if (kamus[i][kamus1] === board[j][k]) {
+            kamus1++;
+            temp.push(board[j][k]);
 
+            if (temp.join('') === kamus[i]) {
+              leftResult.push(kamus[i]);
+
+              count++;
+            }
+          }
+        }
+      }
+    }
+    return leftResult
+  }
+
+  cekdiagonalAcak() {
+    //WOW
 
   }
 
 
 
-  cekDiagonal() {
+
+  Show(no) {
+    let board = this.makeBoard(no)
+    console.log(board)
+    let left = Bogglegame.cekkiri(no)
+    let right = Bogglegame.cekkanan(no)
+    var combine = (left.concat(right))
+    let final = []
+
+    for (let i = 0; i < combine.length; i++) {
+      if (final.includes(combine[i]) === false) {
+        final.push(combine[i])
+      }
+
+    }
 
 
 
+
+    console.log('_________________________________')
+    return final.length + ' Words found: ' + '\n' + final.join(' \n')
 
 
   }
-
-
-
-
-
 }
 //end of class
-
 var Bogglegame = new Boggle();
-console.log(Bogglegame.cekIndekLine());
+//input how many board will be shown below:
+console.log(Bogglegame.Show(8));
