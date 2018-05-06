@@ -1,0 +1,178 @@
+class BoggleBoard {
+  constructor(dimension) {
+    this.dictionary = null;
+    this.dimension = dimension || 4;
+    this.board = this.generateBoard(this.dimension);
+  }
+
+  getDictionary() {
+    const words = require('./data.js');
+    // const words = ['RECEH'];
+    this.dictionary = words;
+  }
+
+  generateBoard(dimension) {
+    const arr = [];
+    for (let i = 0; i < dimension; i += 1) {
+      arr.push([]);
+      for (let j = 0; j < dimension; j += 1) {
+        arr[i].push(' ');
+      }
+    }
+    return arr;
+  }
+
+  shake() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const dimension = this.dimension;
+    for (let i = 0; i < dimension; i += 1) {
+      for (let j = 0; j < dimension; j += 1) {
+        const randomLetter = letters[Math.floor(Math.random()*letters.length)];
+        this.board[i][j] = randomLetter;
+      }
+    }
+    return this.board;
+  }
+
+  searchWord(arr, word) {
+    for (let i = 0; i < this.dictionary.length; i += 1) {
+      if (this.dictionary[i].indexOf(word) === 0) return true;
+    }
+    return false;
+  }
+
+  getLettersAround(x, y) {
+    const arr = [[],[]];
+    let startI = x - 1;
+    let startJ = y - 1;
+    let end = [startI+3, startJ+3];
+    for (let i = x-1; i < end[0]; i += 1) {
+      for (let j = y-1; j < end[1]; j += 1) {
+        if (this.board[i] && this.board[i][j]){
+          if (i !== x || j !== y) {
+            arr[0].push(this.board[i][j]);
+            arr[1].push([i,j]);
+          }
+        }
+      }
+    }
+    return arr;
+  }
+
+  checkCoordinate(arr, coord) {
+    const arrStr = JSON.stringify(arr);
+    const coordStr = JSON.stringify(coord);
+    return arrStr.indexOf(coordStr) > -1;
+  }
+
+  getPossibleIndexes(arr, targetLetter) {
+    const temp = [];
+    for (let i = 0; i < arr.length; i += 1) {
+      const letter = arr[i];
+      if (letter === targetLetter) temp.push(i);
+    }
+    return temp;
+  }
+
+  checkChildWithTwoElements(arr) {
+    for (let i = 0; i < arr.length; i += 1) {
+      if (arr[i].length === 2) return true;
+    }
+    return false;
+  }
+
+  solve() {
+    let counter = 0;
+    let temp = undefined;
+    const result = [];
+    let x = 0;
+    let y = 0;
+    while (this.board[x] !== undefined) {
+      for (let i = 0; i < this.dictionary.length; i += 1) {
+        let word = this.board[x][y];
+        let newX = x;
+        let newY = y;
+        let z = 0;
+        let idx = 1;
+        const previous = [];
+        const possibilities = [];
+        let backtrack = false;
+        let notFound = false;
+        const targetWord = this.dictionary[i];
+        while(targetWord.indexOf(word) === 0 && !notFound) {
+          const letterAround = this.getLettersAround(newX, newY);
+          if (backtrack) {
+            if (possibilities[z].length > 1) {
+              possibilities[z].splice(0, 1);
+              word += letterAround[0][possibilities[z][0]];
+              newX = letterAround[1][possibilities[z][0]][0];
+              newY = letterAround[1][possibilities[z][0]][1];
+              z += 1;
+              idx += 1;
+              backtrack = false;
+            } else {
+              possibilities.splice(possibilities.length-1, 1);
+              previous.splice(previous.length-1, 1);
+              z -= 1;
+              word = word.slice(0, word.length-1);
+              newX = previous[z][0];
+              newY = previous[z][1];
+              idx -= 1;
+            }
+          } else {
+            const possibleLetterIndexes = this.getPossibleIndexes(letterAround[0], targetWord[idx]);
+            if (possibleLetterIndexes.length > 0) {
+              const tempCoord = [
+                letterAround[1][possibleLetterIndexes[0]][0],
+                letterAround[1][possibleLetterIndexes[0]][1]
+              ];
+              if (!this.checkCoordinate(previous, tempCoord)) {
+                possibilities.push(possibleLetterIndexes);
+                previous.push([newX,newY]);
+                word += letterAround[0][possibleLetterIndexes[0]];
+                newX = letterAround[1][possibleLetterIndexes[0]][0];
+                newY = letterAround[1][possibleLetterIndexes[0]][1];
+                z += 1;
+                idx += 1;
+                if (targetWord === word && result.indexOf(word) === -1) {
+                  result.push(word);
+                }
+              } else {
+                notFound = true;
+              }
+            } else if (this.checkChildWithTwoElements(possibilities)) {
+              backtrack = true;
+              z -= 1;
+              word = word.slice(0, word.length-1);
+              newX = previous[z][0];
+              newY = previous[z][1];
+              idx -= 1;
+            } else {
+              notFound = true;
+            }
+          }
+        }
+      }
+
+      y += 1;
+      if (y === this.board[0].length) {
+        x += 1;
+        y = 0;
+      }
+    }
+
+    if (result.length === 0) {
+      console.log('No words found');
+    } else {
+      console.log(`${result.length} word${result.length>1?'s':''} found :`);
+      for (let i = 0; i < result.length; i += 1) {
+        console.log(result[i]);
+      }
+    }
+  }
+}
+
+const boggle = new BoggleBoard(4);
+boggle.getDictionary();
+console.log(boggle.shake());
+boggle.solve();
