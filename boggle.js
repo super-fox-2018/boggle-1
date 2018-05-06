@@ -14,7 +14,7 @@ class Boggle{
         var blankBoard = [];
         var sizeBoard = 4;
         var alp = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        var dummyAlp = 'DGHOKLPSYEUTEORN'
+        var dummyAlp = 'DGHIKLPSYEUTEORN'
         var indxDum = 0;
         
         for(let a = 0; a < sizeBoard; a++){
@@ -35,58 +35,60 @@ class Boggle{
         
         
         for(let a = 0; a < solveBoard.length; a++){
+            var collectLockWord = []; 
             for(let b = 0; b < solveBoard[a].length; b++){
-                var collectLockWord = []; 
                 var lockWord = '';
                 var tempLetter = solveBoard[a][b]
                 var position = [a, b]
 
-                //isi lockword
+                //isi collectLockWords
                 for(let f = 0; f < this.kamus().length ; f++){
                     if(this.kamus()[f][0] === tempLetter){
                         collectLockWord.push(this.kamus()[f])
                     }
                 }
-                console.log(collectLockWord)
+                //console.log(collectLockWord)
                 
-                //loop kamus
-                //console.log(this.kamus().length)
-                for(let c=0; c<this.kamus().length; c++){
+                //loop collectLockWord
+                for(let c=0; c<collectLockWord.length; c++){
+                    console.log(collectLockWord)
                     
-                    if(this.kamus()[c][0]===tempLetter){
+                    if(collectLockWord[c][0]===tempLetter){
 
-                        lockWord = this.kamus()[c]; console.log(lockWord)
+                        lockWord = collectLockWord[c]; 
+                        console.log(lockWord)
                         var counterLockWord = 0;
                         var limCOunterLockWord = lockWord.length-1;
+                        console.log(lockWord.length)
                         var record = [];
-                        console.log(position)
-                        for(let d = 1; d < lockWord.length; d++){
+                        //console.log(position)
+                        for(let d = 0; d < lockWord.length; d++){
                             var theNextLetter = this.radius(...position, solveBoard);
-                            console.log(lockWord[d])
-                            console.log(theNextLetter)
+                            //console.log(lockWord[d])
+                            //console.log(theNextLetter)
                             for(let e = 0;  e <  theNextLetter.length ; e++){
                                 //jika ya update position dan check di radiusnya
                                 //jika tidak sama maka keluar d-1 atau pake while, jadi selama counterLockWord < lim;
                                 if(lockWord[d]===theNextLetter[e][0]){
+                                    console.log(theNextLetter[e][0])
                                     record.push(theNextLetter[e][1]+theNextLetter[e][2])
                                     position = [Number(theNextLetter[e][1]), Number(theNextLetter[e][2])]
+                                    console.log(position)
                                     counterLockWord += 1;
                                     break;
                                     
                                 }
-                            }
-                            console.log(counterLockWord)
-                         console.log(limCOunterLockWord)
+                            }//end looping theNextLetter
+                            //console.log(counterLockWord)
+                            //console.log(limCOunterLockWord)
                             if(counterLockWord === limCOunterLockWord){
                                 this.foundWord.push(lockWord);
                             }
-                        }
-                        //selamahuruf di radius memenuhi kebutuhan huruf nya maka katakan true
-                        //jika huruf disekitar benar maka update radius berikutnya, cek lagi
-                        //jika tidak maka akan di hapus dari lockword
-                        //kembali ke posisi sebelumnya
+                        }//end looping lockword 
+                        //selamahuruf di radius memenuhi kebutuhan hurufnya counter++, record position, update position, lakukan pengecekan kembali 
+                        //jika tidak maka lanjutkan ke kata berikutnya, posisi tidak terupdate sebelumnya
                     }
-                    console.log(theNextLetter)
+                
                     
                 }
                 
