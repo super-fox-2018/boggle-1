@@ -3,32 +3,11 @@ class BoggleBoard {
     this.dictionary = null;
     this.dimension = dimension || 4;
     this.board = this.generateBoard(this.dimension);
-    // this.board = [
-    //   ['D', 'E', 'D', 'A'],
-    //   ['T', 'P', 'O', 'E'],
-    //   ['S', 'U', 'P', 'P'],
-    //   ['E', 'O', 'Z', 'E']
-    // ];
-
-    // this.board = [
-    //   ['D', 'G', 'H', 'I'],
-    //   ['K', 'L', 'P', 'S'],
-    //   ['Y', 'E', 'U', 'T'],
-    //   ['E', 'O', 'R', 'N']
-    // ];
-    // this.board = [
-    //   ['D', 'Z', 'N', 'Z'],
-    //   ['A', 'Z', 'U', 'Z'],
-    //   ['Z', 'Z', 'O', 'Z'],
-    //   ['Z', 'Z', 'Z', 'M']
-    // ];
   }
 
   getDictionary() {
     const words = require('./data.js');
-    // const words = ['APPLE', 'SIT', 'TURN', 'SUPER'].sort();
-    // const words = ['MOM', 'DAD', 'NUN'].sort();
-    // const words = ['NEON'].sort();
+    // const words = ['RECEH'];
     this.dictionary = words;
   }
 
@@ -62,41 +41,19 @@ class BoggleBoard {
     return false;
   }
 
-  getLetterAround(x, y) {
-    const letters1 = this.checkNormaDirections(x, y);
-    const letters2 = this.checkDiagonalDirections(x, y);
-    return [letters1[0].concat(letters2[0]), letters1[1].concat(letters2[1])];
-  }
-
-  getLetterAround(x, y) {
+  getLettersAround(x, y) {
     const arr = [[],[]];
-    let i = x - 1;
-    let j = y - 1;
-    let end = [i+3, j+3];
-    // for (let i = 0; i < end[0]; i += 1) {
-    //   for (let j = 0; j < end[1]; j += 1) {
-    //     if (this.board[i] && this.board[i][j]){
-    //       if (i !== x || j !== y) {
-    //         arr[0].push(this.board[i][j]);
-    //         arr[1].push([i,j]);
-    //       }
-    //     }
-    //   }
-    // }
-    while (i < end[0] || j < end[1]) {
-      if (this.board[i] && this.board[i][j]) {
-        if (i !== x || j !== y) {
-          arr[0].push(this.board[i][j]);
-          arr[1].push([i,j]);
+    let startI = x - 1;
+    let startJ = y - 1;
+    let end = [startI+3, startJ+3];
+    for (let i = x-1; i < end[0]; i += 1) {
+      for (let j = y-1; j < end[1]; j += 1) {
+        if (this.board[i] && this.board[i][j]){
+          if (i !== x || j !== y) {
+            arr[0].push(this.board[i][j]);
+            arr[1].push([i,j]);
+          }
         }
-      }
-
-      j += 1;
-      if (i < end[0]-1 && j === end[1]) {
-        j = y-1;
-        i += 1;
-      } else if (j === end[1]){
-        i += 1;
       }
     }
     return arr;
@@ -143,13 +100,13 @@ class BoggleBoard {
         let notFound = false;
         const targetWord = this.dictionary[i];
         while(targetWord.indexOf(word) === 0 && !notFound) {
-          const letterAround = this.getLetterAround(newX, newY);
+          const letterAround = this.getLettersAround(newX, newY);
           if (backtrack) {
             if (possibilities[z].length > 1) {
               possibilities[z].splice(0, 1);
               word += letterAround[0][possibilities[z][0]];
-              newX = letterAround[1][possibilities[z]][0];
-              newY = letterAround[1][possibilities[z]][1];
+              newX = letterAround[1][possibilities[z][0]][0];
+              newY = letterAround[1][possibilities[z][0]][1];
               z += 1;
               idx += 1;
               backtrack = false;
@@ -203,9 +160,14 @@ class BoggleBoard {
         y = 0;
       }
     }
-    console.log(`${result.length} word${result.length>1?'s':''} found :`);
-    for (let i = 0; i < result.length; i += 1) {
-      console.log(result[i]);
+
+    if (result.length === 0) {
+      console.log('No words found');
+    } else {
+      console.log(`${result.length} word${result.length>1?'s':''} found :`);
+      for (let i = 0; i < result.length; i += 1) {
+        console.log(result[i]);
+      }
     }
   }
 }
