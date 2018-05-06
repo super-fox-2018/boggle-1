@@ -36,16 +36,25 @@ class Boggle{
         
         for(let a = 0; a < solveBoard.length; a++){
             for(let b = 0; b < solveBoard[a].length; b++){
+                var collectLockWord = []; 
                 var lockWord = '';
                 var tempLetter = solveBoard[a][b]
-                
                 var position = [a, b]
+
+                //isi lockword
+                for(let f = 0; f < this.kamus().length ; f++){
+                    if(this.kamus()[f][0] === tempLetter){
+                        collectLockWord.push(this.kamus()[f])
+                    }
+                }
+                console.log(collectLockWord)
                 
                 //loop kamus
                 //console.log(this.kamus().length)
                 for(let c=0; c<this.kamus().length; c++){
                     
                     if(this.kamus()[c][0]===tempLetter){
+
                         lockWord = this.kamus()[c]; console.log(lockWord)
                         var counterLockWord = 0;
                         var limCOunterLockWord = lockWord.length-1;
