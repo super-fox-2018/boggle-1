@@ -28,6 +28,7 @@ class BoggleBoard {
     const words = require('./data.js');
     // const words = ['APPLE', 'SIT', 'TURN', 'SUPER'].sort();
     // const words = ['MOM', 'DAD', 'NUN'].sort();
+    // const words = ['NEON'].sort();
     this.dictionary = words;
   }
 
@@ -72,6 +73,16 @@ class BoggleBoard {
     let i = x - 1;
     let j = y - 1;
     let end = [i+3, j+3];
+    // for (let i = 0; i < end[0]; i += 1) {
+    //   for (let j = 0; j < end[1]; j += 1) {
+    //     if (this.board[i] && this.board[i][j]){
+    //       if (i !== x || j !== y) {
+    //         arr[0].push(this.board[i][j]);
+    //         arr[1].push([i,j]);
+    //       }
+    //     }
+    //   }
+    // }
     while (i < end[0] || j < end[1]) {
       if (this.board[i] && this.board[i][j]) {
         if (i !== x || j !== y) {
@@ -106,7 +117,7 @@ class BoggleBoard {
     return temp;
   }
 
-  checkEvenElement(arr) {
+  checkChildWithTwoElements(arr) {
     for (let i = 0; i < arr.length; i += 1) {
       if (arr[i].length === 2) return true;
     }
@@ -166,13 +177,13 @@ class BoggleBoard {
                 newY = letterAround[1][possibleLetterIndexes[0]][1];
                 z += 1;
                 idx += 1;
-                if (targetWord === word) {
+                if (targetWord === word && result.indexOf(word) === -1) {
                   result.push(word);
                 }
               } else {
                 notFound = true;
               }
-            } else if (this.checkEvenElement(possibilities)) {
+            } else if (this.checkChildWithTwoElements(possibilities)) {
               backtrack = true;
               z -= 1;
               word = word.slice(0, word.length-1);
