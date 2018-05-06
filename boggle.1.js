@@ -192,14 +192,12 @@ class BoggleBoard {
         y = 0;
       }
     }
-    console.log(`${result.length} word${result.length>1?'s':''} found :`);
-    for (let i = 0; i < result.length; i += 1) {
-      console.log(result[i]);
-    }
+    return result;
   }
 }
 
 const boggle = new BoggleBoard(4);
 boggle.getDictionary();
 console.log(boggle.shake());
-boggle.solve();
+console.log(boggle.solve());
+// OUTPUT : TURN, SUPER
